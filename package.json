@@ -1,0 +1,21 @@
+{
+  "name": "siubella-backend",
+  "version": "1.0.0",
+  "description": "backend para pagina web de siubella para registro de citas y catalogo de servicios",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "author": "cesar rivera",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
