@@ -14,6 +14,7 @@ app.use(express.urlencoded({extended: false}))
 
 //cuando en postman use /api/citas buscara en routes y citasroutes
 app.use('/api/citas', require('./routes/citasRoutes')) 
+app.use('/api/users', require('./routes/usersRoutes')) 
 
 app.use(errorHandler) //le digo al app que estoy usando manejador de errores
  

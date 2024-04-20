@@ -44,7 +44,7 @@ const deleteCitas = asyncHandler( async(req, res) => {
         throw new Error('esa tarea no existe')
     }
     await Cita.deleteOne(cita)
-    
+
     res.status(200).json({ id: req.params.id})
 })
 

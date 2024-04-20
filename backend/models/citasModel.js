@@ -1,6 +1,12 @@
 const mongoose = require('mongoose')
 
 const citaSchema = mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+
     fecha: {
         type: Date,
         required: [true, 'por favor especifica una fecha']
