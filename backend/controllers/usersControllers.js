@@ -28,7 +28,8 @@ const createUser = asyncHandler( async (req, res) => {
     const user = await User.create({
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        esAdmin
     })
 
     if(user) {
@@ -45,13 +46,37 @@ const createUser = asyncHandler( async (req, res) => {
 })
 
 const loginUser = asyncHandler( async (req, res) => {
-    res.status(200).json({message: 'login usuario'})
+
+    const {email, password} = req.body
+
+    //buscar un usuario con el email dado
+    const user = await User.findOne({email})
+
+    //si el usario existe,verificamos tambien el password
+    if(user && (await bcrypt.compare(password, user.password))) {
+        res.status(200).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            esAdmin: user.esAdmin,
+            token: genToken(user.id)
+        })
+    } else {
+        res.status(400)
+        throw new Error('Credenciales incorrectas')
+    }
 })
 
 const userData = asyncHandler( async (req, res) => {
-    res.status(200).json({message: 'datos del usuario'})
+    res.status(200).json(req.user)
+})
+
+//funcion para generar el token
+const genToken = (id_usuario) => {
+    return jwt.sign({id_usuario}, process.env.JWT_SECRET, {
+        expiresIn: '1d'
+    })
 }
-)
 
 module.exports = {
     createUser,
