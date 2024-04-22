@@ -3,7 +3,7 @@ const Cita = require('../models/citasModel')
 
 const getCitas = asyncHandler(async(req, res) => {
 
-    const citas = await Cita.find()
+    const citas = await Cita.find({user: req.user.id})
     res.status(200).json(citas)
 })
 
@@ -16,7 +16,8 @@ const createCitas = asyncHandler( async(req, res) => {
 
     const cita = await Cita.create({
         fecha: req.body.fecha,
-        tipoDeServicio: req.body.tipoDeServicio
+        tipoDeServicio: req.body.tipoDeServicio,
+        user: req.user.id
     })
 
 
@@ -31,9 +32,14 @@ const updateCitas = asyncHandler( async(req, res) => {
         throw new Error('esa tarea no existe')
     }
 
-    const citaUpdated = await Cita.findByIdAndUpdate(req.params.id, req.body, {new: true})
-
-    res.status(200).json(citaUpdated)
+    //nos aseguramos que la cita pertenezca al usario logeado, es decir al del token
+    if(cita.user.toString() !== req.user.id) {
+        res.status(401)
+        throw new Error('usuario no autorizado')
+    } else {
+        const citaUpdated = await Cita.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        res.status(200).json(citaUpdated)
+    }
 })
 
 const deleteCitas = asyncHandler( async(req, res) => {
@@ -43,9 +49,15 @@ const deleteCitas = asyncHandler( async(req, res) => {
         res.status(400)
         throw new Error('esa tarea no existe')
     }
-    await Cita.deleteOne(cita)
 
-    res.status(200).json({ id: req.params.id})
+    //nos aseguramos que la cita pertenezca al usario logeado, es decir al del token
+    if(cita.user.toString() !== req.user.id) {
+        res.status(401)
+        throw new Error('usuario no autorizado')
+    } else {
+        await Cita.deleteOne(cita)
+        res.status(200).json({ id: req.params.id})
+    }
 })
 
 module.exports = {
